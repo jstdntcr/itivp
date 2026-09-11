@@ -1,0 +1,53 @@
+@base = http://localhost:8080
+
+### Список всех репетиторов
+GET {{base}}/tutors
+
+### Один репетитор по id
+GET {{base}}/tutors/1
+
+### Несуществующий репетитор -> 404
+GET {{base}}/tutors/999
+
+### Создание репетитора -> 201
+POST {{base}}/tutors
+Content-Type: application/json
+
+{
+  "name": "Мария Ковалёва",
+  "subject": "Физика",
+  "bio": "Механика и электродинамика для школьников."
+}
+
+### Создание без обязательных полей -> 400
+POST {{base}}/tutors
+Content-Type: application/json
+
+{
+  "name": ""
+}
+
+### Полное обновление -> 200
+PUT {{base}}/tutors/1
+Content-Type: application/json
+
+{
+  "name": "Анна Смирнова",
+  "subject": "Высшая математика",
+  "bio": "Подготовка студентов к сессии."
+}
+
+### Обновление несуществующего -> 404
+PUT {{base}}/tutors/999
+Content-Type: application/json
+
+{
+  "name": "Тест",
+  "subject": "Тест"
+}
+
+### Удаление -> 200
+DELETE {{base}}/tutors/2
+
+### Удаление несуществующего -> 404
+DELETE {{base}}/tutors/999
