@@ -1,7 +1,6 @@
 'use strict';
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  // Начальное наполнение таблицы Tutors тестовыми данными
   async up(queryInterface, Sequelize) {
     const now = new Date();
     await queryInterface.bulkInsert('Tutors', [
@@ -32,7 +31,6 @@ module.exports = {
     ], {});
   },
 
-  // Откат сида — очищаем таблицу
   async down(queryInterface, Sequelize) {
     await queryInterface.bulkDelete('Tutors', null, {});
   },

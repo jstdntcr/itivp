@@ -3,29 +3,30 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Tutor extends Model {
+  class User extends Model {
     static associate(models) {}
   }
-  Tutor.init({
-    name: {
+  User.init({
+    email: {
       type: DataTypes.STRING,
       allowNull: false,
-      validate: { notEmpty: true },
+      unique: true,
+      validate: { isEmail: true },
     },
-    subject: {
+    passwordHash: {
       type: DataTypes.STRING,
       allowNull: false,
-      validate: { notEmpty: true },
     },
-    bio: DataTypes.TEXT,
-    hourlyRate: {
-      type: DataTypes.INTEGER,
+    refreshToken: {
+      type: DataTypes.TEXT,
       allowNull: true,
-      validate: { min: 0 },
     }
   }, {
     sequelize,
-    modelName: 'Tutor',
+    modelName: 'User',
+    defaultScope: {
+      attributes: { exclude: ['passwordHash', 'refreshToken'] },
+    },
   });
-  return Tutor;
+  return User;
 };

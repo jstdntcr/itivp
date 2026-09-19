@@ -1,35 +1,81 @@
 @base = http://localhost:8080
 
-### Список всех репетиторов
+############################################################
+# Аутентификация (ЛР№3)
+############################################################
+
+### Регистрация -> 201
+POST {{base}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "tutor@example.com",
+  "password": "secret123"
+}
+
+### Вход -> 200 (сохраняем токены в переменные REST Client)
+# @name login
+POST {{base}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "tutor@example.com",
+  "password": "secret123"
+}
+
+### Текущий пользователь (защищённый) -> 200
+GET {{base}}/profile
+Authorization: Bearer {{login.response.body.accessToken}}
+
+### Профиль без токена -> 401
+GET {{base}}/profile
+
+### Обновление пары токенов -> 200
+POST {{base}}/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "{{login.response.body.refreshToken}}"
+}
+
+############################################################
+# Репетиторы (чтение — публичное, изменение — по токену)
+############################################################
+
+### Список всех репетиторов -> 200
 GET {{base}}/tutors
 
-### Один репетитор по id
+### Один репетитор по id -> 200
 GET {{base}}/tutors/1
 
 ### Несуществующий репетитор -> 404
 GET {{base}}/tutors/999
 
-### Создание репетитора -> 201
+### Создание репетитора без токена -> 401
 POST {{base}}/tutors
 Content-Type: application/json
 
 {
   "name": "Мария Ковалёва",
-  "subject": "Физика",
-  "bio": "Механика и электродинамика для школьников."
+  "subject": "Физика"
 }
 
-### Создание без обязательных полей -> 400
+### Создание репетитора с токеном -> 201
 POST {{base}}/tutors
 Content-Type: application/json
+Authorization: Bearer {{login.response.body.accessToken}}
 
 {
-  "name": ""
+  "name": "Мария Ковалёва",
+  "subject": "Физика",
+  "bio": "Механика и электродинамика для школьников.",
+  "hourlyRate": 45
 }
 
-### Полное обновление -> 200
+### Полное обновление (с токеном) -> 200
 PUT {{base}}/tutors/1
 Content-Type: application/json
+Authorization: Bearer {{login.response.body.accessToken}}
 
 {
   "name": "Анна Смирнова",
@@ -37,17 +83,6 @@ Content-Type: application/json
   "bio": "Подготовка студентов к сессии."
 }
 
-### Обновление несуществующего -> 404
-PUT {{base}}/tutors/999
-Content-Type: application/json
-
-{
-  "name": "Тест",
-  "subject": "Тест"
-}
-
-### Удаление -> 200
+### Удаление (с токеном) -> 200
 DELETE {{base}}/tutors/2
-
-### Удаление несуществующего -> 404
-DELETE {{base}}/tutors/999
+Authorization: Bearer {{login.response.body.accessToken}}
