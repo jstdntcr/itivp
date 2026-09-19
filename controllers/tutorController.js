@@ -1,10 +1,5 @@
-// Контроллер: обработка HTTP-запросов и бизнес-логика.
-// Данные теперь берутся из PostgreSQL через Sequelize-модель Tutor (ЛР№2),
-// раньше (ЛР№1) здесь был массив в памяти. Маршруты и middleware не изменились.
-
 const { Tutor } = require('../models');
 
-// Валидация тела запроса. Возвращает массив ошибок (пустой = ок).
 function validateTutor(body) {
   const errors = [];
   if (typeof body.name !== 'string' || body.name.trim() === '') {
@@ -24,7 +19,6 @@ function validateTutor(body) {
   return errors;
 }
 
-// Приводит тело запроса к чистому объекту репетитора.
 function buildTutor(body) {
   return {
     name: body.name.trim(),
@@ -34,7 +28,6 @@ function buildTutor(body) {
   };
 }
 
-// GET /tutors
 async function getAll(req, res, next) {
   try {
     const tutors = await Tutor.findAll({ order: [['id', 'ASC']] });
@@ -44,7 +37,6 @@ async function getAll(req, res, next) {
   }
 }
 
-// GET /tutors/:id
 async function getById(req, res, next) {
   try {
     const tutor = await Tutor.findByPk(req.params.id);
@@ -57,7 +49,6 @@ async function getById(req, res, next) {
   }
 }
 
-// POST /tutors
 async function create(req, res, next) {
   const errors = validateTutor(req.body);
   if (errors.length > 0) {
@@ -71,7 +62,6 @@ async function create(req, res, next) {
   }
 }
 
-// PUT /tutors/:id
 async function update(req, res, next) {
   const errors = validateTutor(req.body);
   if (errors.length > 0) {
@@ -89,7 +79,6 @@ async function update(req, res, next) {
   }
 }
 
-// DELETE /tutors/:id
 async function remove(req, res, next) {
   try {
     const tutor = await Tutor.findByPk(req.params.id);
