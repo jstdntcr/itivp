@@ -99,7 +99,7 @@ async function refresh(req, res, next) {
     }
 
     const tokens = generateTokens(user);
-    user.refreshToken = tokens.refreshToken; // ротация refresh-токена
+    user.refreshToken = tokens.refreshToken;
     await user.save();
 
     res.json(tokens);
